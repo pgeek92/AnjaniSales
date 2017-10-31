@@ -1,0 +1,424 @@
+<!DOCTYPE html [
+    <!ENTITY copy "&#169;"> 
+]>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<script src="js/history.js"></script>
+
+</h:head>
+
+<body>
+
+	<p:panel id="headPanel" header="Demo">
+
+		<ui:include src="adminMenuBar.xhtml" />
+		<br></br>
+
+		<p:panel id="formPanel" header="Add Sales Transaction">
+
+			<h:form id="addSalesForm">
+				<p:growl id="growl" showDetail="false" life="5000" />
+				<h:panelGrid columns="4" cellpadding="12" style="margin : 0 auto;">
+
+					<p:outputLabel for="date" value="Select Date"></p:outputLabel>
+					<p:calendar required="true" id="date"
+						value="#{salesManagedBean.billBean.selectedDate}"
+						pattern="dd-MM-yyyy" mask="true" placeholder="dd-MM-yyyy"
+						requiredMessage="Date is Mandatory"
+						maxdate="#{salesManagedBean.maxDate}" />
+
+					<p:outputLabel for="billId" value="Bill Id"></p:outputLabel>
+					<p:inputNumber id="billId" decimalPlaces="0" minValue="1"
+						disabled="true" dir="rtl"
+						value="#{salesManagedBean.billBean.billId}">
+					</p:inputNumber>
+
+					<p:outputLabel for="selectParty" value="Select Party"></p:outputLabel>
+					<h:panelGroup>
+						<p:autoComplete id="selectParty" required="true"
+							placeholder="Select Party Name"
+							requiredMessage="Party Name is mandatory" forceSelection="true"
+							value="#{salesManagedBean.billBean.selectedPartyName}"
+							completeMethod="#{salesManagedBean.completeParty}"
+							dropdown="false" dropdownMode="" immediate="" queryDelay="500"
+							maxResults="5" emptyMessage="No results Found" minQueryLength="1">
+							<p:ajax event="blur"
+								update="outstandingAmount searchButton partyDetailDailog"
+								listener="#{salesManagedBean.partyKeyEvent()}" />
+						</p:autoComplete>
+						<p:commandButton id="searchButton"
+							disabled="#{empty salesManagedBean.billBean.selectedPartyName or salesManagedBean.billBean.selectedPartyName eq null}"
+							onclick="PF('partyOP').show()" icon="ui-icon-search" title="View">
+						</p:commandButton>
+
+						<p:blockUI block="formPanel" trigger="searchButton">
+							<p:outputLabel value="LOADING"></p:outputLabel>
+							<br></br>
+							<img src="images/ajaxloadingbar.gif" />
+						</p:blockUI>
+
+					</h:panelGroup>
+					<p:outputLabel for="outstandingAmount" value="Outstanding Amount"></p:outputLabel>
+					<p:inputNumber id="outstandingAmount" decimalPlaces="2"
+						maxValue="999999" readonly="true"
+						value="#{salesManagedBean.billBean.outstandingAmount}"
+						disabled="true" dir="rtl">
+					</p:inputNumber>
+				</h:panelGrid>
+
+				<p:dialog header="Dialog" widgetVar="partyOP" dynamic="true"
+					id="partyDetailDailog" showHeader="true" resizable="false"
+					draggable="false" showEffect="fade" hideEffect="fade"
+					dismissable="false" closeOnEscape="true" width="500px">
+					<p:panelGrid columns="2">
+						<h:outputText value="Party Name: " />
+						<h:outputText
+							value="#{salesManagedBean.billBean.selectedParty.partyName}" />
+						<h:outputText value="Party Status: " />
+						<h:outputText
+							value="#{salesManagedBean.billBean.selectedParty.partyStatus}" />
+						<h:outputText value="Party Category: " />
+						<h:outputText
+							value="#{salesManagedBean.billBean.selectedParty.partyCategory}" />
+						<h:outputText value="Total Outstanding Amount: " />
+						<h:outputText
+							value="#{salesManagedBean.billBean.selectedParty.totalOutstandingAmount}" />
+						<h:outputText value="Address: " />
+						<h:outputText
+							value="#{salesManagedBean.billBean.selectedParty.address}" />
+						<h:outputText value="Landmark: " />
+						<h:outputText
+							value="#{salesManagedBean.billBean.selectedParty.landmark}" />
+						<h:outputText value="City: " />
+						<h:outputText
+							value="#{salesManagedBean.billBean.selectedParty.city}" />
+						<h:outputText value="Remarks: " />
+						<h:outputText
+							value="#{salesManagedBean.billBean.selectedParty.remarks}" />
+					</p:panelGrid>
+
+				</p:dialog>
+
+				<p:dataTable id="salesDetails" var="sales"
+					value="#{salesManagedBean.listSalesBean}" editable="true"
+					style="margin-bottom:20pCZ184Ax"
+					emptyMessage="No items added till now" rowKey="#{sales}"
+					widgetVar="ab" editMode="row">
+					<f:facet name="header">Sales Details</f:facet>
+
+					<p:column headerText="Select Item" style="width:240px">
+						<p:outputLabel value="#{sales.selectedItemName}"
+							rendered="#{not sales.editable}" for="selectItem" />
+
+						<p:autoComplete id="selectItem" required="true"
+							placeholder="Select Item Name"
+							requiredMessage="Item Name is mandatory" forceSelection="true"
+							value="#{sales.selectedItemName}"
+							completeMethod="#{salesManagedBean.completeItem}"
+							dropdown="false" dropdownMode="" immediate="" queryDelay="500"
+							maxResults="5" emptyMessage="No results Found" minQueryLength="1"
+							rendered="#{sales.editable}"></p:autoComplete>
+					</p:column>
+
+					<p:column headerText="Rate per Unit" style="width:80px">
+						<h:outputLabel value="#{sales.ratePerUnit}"
+							rendered="#{not sales.editable}" for="ratePerUnit" />
+
+						<p:inputNumber decimalPlaces="2" maxValue="99999999"
+							id="ratePerUnit" minValue="0.00" value="#{sales.ratePerUnit}"
+							required="true" requiredMessage="Rate Per Unit is Mandatory"
+							rendered="#{sales.editable}">
+							<p:ajax event="blur" update="basicAmount brokerageAmount"
+								listener="#{salesManagedBean.rateAndQuantityKeyEvent(sales)}" />
+						</p:inputNumber>
+					</p:column>
+
+					<p:column headerText="Quantity" style="width:80px">
+						<h:outputLabel value="#{sales.quantity}"
+							rendered="#{not sales.editable}" for="quantity" />
+
+						<p:inputNumber decimalPlaces="2" maxValue="999999" minValue="0.00"
+							id="quantity" value="#{sales.quantity}" required="true"
+							requiredMessage="Quantity is Mandatory"
+							rendered="#{sales.editable}">
+							<p:ajax event="blur" update="basicAmount brokerageAmount"
+								listener="#{salesManagedBean.rateAndQuantityKeyEvent(sales)}" />
+						</p:inputNumber>
+					</p:column>
+
+					<p:column headerText="Basic Amount" style="width:100px">
+
+						<h:outputText value="#{sales.basicAmount}"
+							rendered="#{not sales.editable}" />
+
+						<p:inputNumber id="basicAmount" value="#{sales.basicAmount}"
+							rendered="#{sales.editable}" decimalPlaces="2"
+							maxValue="99999999" disabled="true"></p:inputNumber>
+					</p:column>
+
+					<p:column headerText="Select Broker" style="width:200px">
+						<h:outputText value="#{sales.selectedBroker}"
+							rendered="#{not sales.editable}" />
+
+						<p:autoComplete placeholder="Select Broker"
+							value="#{sales.selectedBroker}"
+							completeMethod="#{salesManagedBean.completeBroker}"
+							forceSelection="true" dropdown="false" dropdownMode=""
+							immediate="" queryDelay="500" maxResults="5"
+							emptyMessage="No results Found" minQueryLength="1"
+							rendered="#{sales.editable}">
+							<p:ajax update="brokeragePer brokerageAmount" />
+						</p:autoComplete>
+					</p:column>
+
+					<p:column headerText="Enable Broker %" style="width:50px">
+						<center>
+							<p:selectBooleanCheckbox value="#{sales.brokerPercentageEnabled}"
+								rendered="#{not sales.editable}" disabled="true">
+
+							</p:selectBooleanCheckbox>
+
+
+							<p:selectBooleanCheckbox value="#{sales.brokerPercentageEnabled}"
+								rendered="#{sales.editable}">
+								<p:ajax update="brokeragePer brokerageAmount"
+									listener="#{salesManagedBean.brokeragePerEnabledEvent(sales)}" />
+							</p:selectBooleanCheckbox>
+						</center>
+					</p:column>
+
+					<p:column headerText="Broker %" style="width:70px">
+						<h:outputText value="#{sales.brokeragePercentage}"
+							rendered="#{not sales.editable}" />
+
+						<p:inputNumber value="#{sales.brokeragePercentage}"
+							required="#{not(empty sales.selectedBroker) or (not sales.brokerPercentageEnabled)}"
+							decimalPlaces="2" maxValue="100" rendered="#{sales.editable}"
+							disabled="#{(empty sales.selectedBroker) or (not sales.brokerPercentageEnabled)}"
+							id="brokeragePer">
+							<p:ajax event="blur" update="brokerageAmount"
+								listener="#{salesManagedBean.brokerageKeyEvent(sales)}" />
+						</p:inputNumber>
+					</p:column>
+
+					<p:column headerText="Brokerage Amount" style="width:132px"
+						resizable="true">
+						<h:outputText value="#{sales.brokerageAmount}"
+							rendered="#{not sales.editable}" for="brokerageAmount" />
+						<p:inputNumber value="#{sales.brokerageAmount}"
+							id="brokerageAmount" decimalPlaces="2" maxValue="99999999"
+							rendered="#{sales.editable}"
+							required="#{not((empty sales.selectedBroker) or (sales.brokerPercentageEnabled))}"
+							requiredMessage="Broker Amount is mandatory"
+							disabled="#{(empty sales.selectedBroker) or (sales.brokerPercentageEnabled)}"></p:inputNumber>
+					</p:column>
+
+					<p:column style="width:32px" headerText="Edit or Save">
+						<p:commandLink value="#{sales.editable ? 'Save':'Edit'}"
+							action="#{salesManagedBean.editAction(sales)}"
+							update="salesDetails addSalesForm:totalBillAmount"></p:commandLink>
+
+					</p:column>
+					<p:column style="width:50px" headerText="Delete">
+						<p:commandLink value="Delete"
+							action="#{salesManagedBean.deleteAction(sales)}"
+							update="salesDetails" immediate="true"></p:commandLink>
+
+					</p:column>
+
+					<p:columnGroup type="footer">
+						<p:row>
+							<p:column colspan="3" style="text-align:right"
+								footerText="Total :">
+
+							</p:column>
+
+							<p:column colspan="7" style="text-align:left"
+								footerText="#{salesManagedBean.billBean.totalSaleAmount}">
+
+
+							</p:column>
+
+						</p:row>
+					</p:columnGroup>
+				</p:dataTable>
+
+				<p:commandButton value="Add Item" id="addItems"
+					update="salesDetails growl"
+					action="#{salesManagedBean.buttonAction}" />
+
+				<h:panelGrid columns="4" cellpadding="12" style="margin : 0 auto;">
+
+					<p:outputLabel for="bardanna" value="Bardanna"></p:outputLabel>
+					<p:inputNumber id="bardanna" decimalPlaces="2" maxValue="999999"
+						minValue="0.00" value="#{salesManagedBean.billBean.bardaana}"
+						required="true" requiredMessage="bardaana is Mandatory">
+						<p:ajax event="blur" update="totalBillAmount"
+							listener="#{salesManagedBean.totalBillKeyEvent()}" />
+					</p:inputNumber>
+
+					<p:outputLabel for="mazdoori" value="Mazdoori"></p:outputLabel>
+					<p:inputNumber id="mazdoori" decimalPlaces="2" maxValue="999999"
+						minValue="0.00" value="#{salesManagedBean.billBean.mazdoori}"
+						required="true" requiredMessage="Mazdoori is Mandatory">
+						<p:ajax event="blur" update="totalBillAmount"
+							listener="#{salesManagedBean.totalBillKeyEvent()}" />
+					</p:inputNumber>
+
+					<p:outputLabel for="muddat" value="Muddat"></p:outputLabel>
+					<p:inputNumber id="muddat" decimalPlaces="2" maxValue="999999"
+						minValue="0.00" value="#{salesManagedBean.billBean.muddat}"
+						required="true" requiredMessage="Muddat is Mandatory">
+						<p:ajax event="blur" update="totalBillAmount"
+							listener="#{salesManagedBean.totalBillKeyEvent()}" />
+					</p:inputNumber>
+
+					<p:outputLabel for="discount" value="Discount"></p:outputLabel>
+					<p:inputNumber id="discount" decimalPlaces="2" maxValue="999999"
+						minValue="0.00" value="#{salesManagedBean.billBean.discount}"
+						required="true" requiredMessage="Discount is Mandatory">
+						<p:ajax event="blur" update="totalBillAmount"
+							listener="#{salesManagedBean.totalBillKeyEvent()}" />
+					</p:inputNumber>
+
+					<p:outputLabel for="totalBillAmount" value="Total Bill Amount"></p:outputLabel>
+					<p:inputNumber id="totalBillAmount" decimalPlaces="2"
+						maxValue="999999"
+						value="#{salesManagedBean.billBean.totalBillAmount}"
+						required="true" requiredMessage="Total Bill Amount is Mandatory"
+						disabled="true">
+					</p:inputNumber>
+
+
+				</h:panelGrid>
+				<h:panelGrid columns="2" cellpadding="10" style="margin : 0 auto;">
+					<p:commandButton id="saves" title="Save"
+						action="#{salesManagedBean.save}" update="growl">
+					</p:commandButton>
+					<p:commandButton title="Reset" update="formPanel" process="@this"
+						style="margin-right:20px;">
+						<p:resetInput target="formPanel" />
+					</p:commandButton>
+				</h:panelGrid>
+			</h:form>
+
+			<h:form>
+
+				<h:panelGrid columns="2" cellpadding="12" style="margin : 0 auto;">
+
+
+					<p:commandButton onclick="window.print(); return false;"
+						value="Print Me"></p:commandButton>
+					<p:commandButton id="printbutton" value="printbutton"
+						action="#{salesManagedBean.save}" update="@all"
+						oncomplete="location.reload();">
+
+						<p:printer target="print"></p:printer>
+					</p:commandButton>
+
+					<h:commandButton value="abc" action="#{salesManagedBean.save}">
+						<f:ajax execute="@this"></f:ajax>
+						<p:printer target="print"></p:printer>
+					</h:commandButton>
+
+
+					<p:remoteCommand name="rc" action="#{salesManagedBean.save}"></p:remoteCommand>
+					<p:commandButton id="submit" value="checking" type="button"
+						onclick="rc()">
+
+						<p:printer target="print"></p:printer>
+					</p:commandButton>
+
+					<p:commandButton id="submitsss" title="new button"
+						actionListener="#{salesManagedBean.abc}">
+						<f:ajax execute="@this" />
+						<p:printer target="print"></p:printer>
+
+					</p:commandButton>
+
+
+
+
+					<p:commandButton title="Reset" update="formPanel" process="@this"
+						style="margin-right:20px;">
+						<p:resetInput target="formPanel" />
+					</p:commandButton>
+				</h:panelGrid>
+
+				<p:outputPanel autoUpdate="true">
+					<p:panel rendered="true" id="print">
+						<p:panelGrid>
+							<f:facet name="header">
+								<p:row>
+									<p:column colspan="7">N <br> </br> Add</p:column>
+								</p:row>
+
+
+							</f:facet>
+
+							<p:row>
+								<p:column>Item Name</p:column>
+								<p:column>Rate</p:column>
+								<p:column>Quantity</p:column>
+								<p:column>Basic Amount</p:column>
+								<p:column>Total</p:column>
+
+							</p:row>
+							<p:repeat value="#{salesManagedBean.listSalesBean}" var="sales">
+								<p:row>
+									<p:column style="font-weight: bold;">#{sales.selectedItemName}</p:column>
+									<p:column style="font-weight: bold;">4</p:column>
+
+									<p:column rowspan="2" style="font-weight: bold;">Seattle</p:column>
+									<p:column rowspan="2" style="font-weight: bold;">4</p:column>
+
+									<p:column rowspan="5">Seattle</p:column>
+									<p:column rowspan="5">2</p:column>
+
+									<p:column rowspan="11" style="font-weight: bold;">Chicago</p:column>
+								</p:row>
+							</p:repeat>
+
+						</p:panelGrid>
+					</p:panel>
+				</p:outputPanel>
+
+				<!-- <p:panel rendered="true" id="prints">
+						<p:panelGrid columns="5">
+							<f:facet name="header">
+								<p:outputLabel>Ns</p:outputLabel>
+								<br></br>
+								<p:outputLabel>Adds</p:outputLabel>
+
+
+
+							</f:facet>
+
+
+
+
+
+
+						</p:panelGrid>
+					</p:panel>-->
+			</h:form>
+		</p:panel>
+
+
+	</p:panel>
+	<h:form>
+		<center>
+			<h:outputLabel value="&copy; Copyright"
+				style="position: relative; left: 0; bottom: 0; right: 0;"></h:outputLabel>
+		</center>
+	</h:form>
+</body>
+
+</html>

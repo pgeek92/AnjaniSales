@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+
+	<meta charset="utf-8" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	<script src="js/history.js"></script>
+
+</h:head>
+
+
+<body>
+	<p:growl id="messages" showDetail="true" sticky="true" />
+	<p:idleMonitor timeout="500000">
+        <p:ajax event="idle" listener="#{idleMonitorManagedBean.onIdle}" update="messages" />
+        <p:ajax event="active" listener="#{idleMonitorManagedBean.onActive}" update="messages" />
+    </p:idleMonitor>
+	<p:menubar>
+		<f:facet name="options4">
+			<p:inputText>Saint Stephen Library Management</p:inputText>
+		</f:facet>
+		<p:submenu label="Item" icon="ui-icon-document">
+			<p:menuitem value="Add Item" icon="ui-icon-contact" url="addItem.xhtml" />
+			<p:menuitem value="Update Item" url="updateItem.xhtml" />
+			<p:menuitem value="View Item Details" url="viewItems.xhtml" />
+			<p:separator />
+		</p:submenu>
+		<p:submenu label="Party" icon="ui-icon-document">
+			<p:menuitem value="Add Party" icon="ui-icon-contact" url="addParty.xhtml" />
+			<p:menuitem value="Update Party" url="updateParty.xhtml" />
+			<p:menuitem value="View Party Details" url="viewParties.xhtml" />
+			<p:separator />
+		</p:submenu>
+		<p:submenu label="Broker" icon="ui-icon-document">
+			<p:menuitem value="Add Broker" icon="ui-icon-contact" url="addBroker.xhtml" />
+			<p:menuitem value="Update Broker" url="updateBroker.xhtml" />
+			<p:menuitem value="View Broker Details" url="viewBrokers.xhtml" />
+			<p:separator />
+		</p:submenu>
+		<p:menuitem value="Update User" url="#" />
+		<p:menuitem value="Add Sales Transaction" url="addSalesTransaction.xhtml" />
+
+		<f:facet name="options">
+			<p:inputText style="margin-right:10px" placeholder="Search" />
+			<p:commandButton value="Logout" icon="ui-icon-extlink" action="#{loginManagedBean.logout}" />
+		</f:facet>
+	</p:menubar>
+
+	
+</body>
+
+</html>

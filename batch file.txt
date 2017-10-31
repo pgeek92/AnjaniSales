@@ -1,0 +1,55 @@
+@echo off
+
+FOR /f "tokens=1-8 delims=:./ " %%G IN ("%date%_%time%") DO (
+
+SET datetime=%%G%%H%%I_%%J_%%K
+
+)
+
+set result_file=../output/ItemTableCreationLogs%datetime%.log
+set schema_name_table=
+set schema_name_synonym= 
+set user_name=
+set password=
+set net_service_name=
+
+if exist %result_file% (
+    del %result_file%
+)
+
+cd ../scripts
+
+echo exit | sqlplus -s  %user_name%/%password%@%net_service_name% @TradeUnit.sql %schema_name_table% %schema_name_synonym% >> %result_file%
+echo exit | sqlplus -s  %user_name%/%password%@%net_service_name% @Pallet.sql %schema_name_table% %schema_name_synonym% >> %result_file%
+echo exit | sqlplus -s  %user_name%/%password%@%net_service_name% @BaseUnit.sql %schema_name_table% %schema_name_synonym% >> %result_file%
+
+echo exit | sqlplus -s  %user_name%/%password%@%net_service_name% @BaseUnitAllergen.sql %schema_name_table% %schema_name_synonym% >> %result_file%
+echo exit | sqlplus -s  %user_name%/%password%@%net_service_name% @BaseUnitAllergenStatement.sql %schema_name_table% %schema_name_synonym% >> %result_file%
+echo exit | sqlplus -s  %user_name%/%password%@%net_service_name% @BaseUnitCountry.sql %schema_name_table% %schema_name_synonym% >> %result_file%
+echo exit | sqlplus -s  %user_name%/%password%@%net_service_name% @BaseUnitEnvMarking.sql %schema_name_table% %schema_name_synonym% >> %result_file%
+echo exit | sqlplus -s  %user_name%/%password%@%net_service_name% @BaseUnitHazardCode.sql %schema_name_table% %schema_name_synonym% >> %result_file%
+echo exit | sqlplus -s  %user_name%/%password%@%net_service_name% @BaseUnitIngredient.sql %schema_name_table% %schema_name_synonym% >> %result_file%
+echo exit | sqlplus -s  %user_name%/%password%@%net_service_name% @BaseUnitIngredientCountry.sql %schema_name_table% %schema_name_synonym% >> %result_file%
+echo exit | sqlplus -s  %user_name%/%password%@%net_service_name% @BaseUnitIngredientMarking.sql %schema_name_table% %schema_name_synonym% >> %result_file%
+echo exit | sqlplus -s  %user_name%/%password%@%net_service_name% @BaseUnitIngredientName.sql %schema_name_table% %schema_name_synonym% >> %result_file%
+echo exit | sqlplus -s  %user_name%/%password%@%net_service_name% @BaseUnitNutrient.sql %schema_name_table% %schema_name_synonym% >> %result_file%
+echo exit | sqlplus -s  %user_name%/%password%@%net_service_name% @BaseUnitNutrientList.sql %schema_name_table% %schema_name_synonym% >> %result_file%
+echo exit | sqlplus -s  %user_name%/%password%@%net_service_name% @BaseUnitNutrientQuantity.sql %schema_name_table% %schema_name_synonym% >> %result_file%
+echo exit | sqlplus -s  %user_name%/%password%@%net_service_name% @BaseUnitTaxCodePerCountry.sql %schema_name_table% %schema_name_synonym% >> %result_file%
+echo exit | sqlplus -s  %user_name%/%password%@%net_service_name% @BuyingItem.sql %schema_name_table% %schema_name_synonym% >> %result_file%
+
+echo exit | sqlplus -s  %user_name%/%password%@%net_service_name% @NutrientDailyValueRef.sql %schema_name_table% %schema_name_synonym% >> %result_file%
+echo exit | sqlplus -s  %user_name%/%password%@%net_service_name% @NutrientHouseHoldServingSize.sql %schema_name_table% %schema_name_synonym% >> %result_file%
+echo exit | sqlplus -s  %user_name%/%password%@%net_service_name% @NutrientServingSize.sql %schema_name_table% %schema_name_synonym% >> %result_file%
+
+echo exit | sqlplus -s  %user_name%/%password%@%net_service_name% @AttibuteValuePair.sql %schema_name_table% %schema_name_synonym% >> %result_file%
+echo exit | sqlplus -s  %user_name%/%password%@%net_service_name% @BuyingItemMember.sql %schema_name_table% %schema_name_synonym% >> %result_file%
+echo exit | sqlplus -s  %user_name%/%password%@%net_service_name% @DepositCodePerCountry.sql %schema_name_table% %schema_name_synonym% >> %result_file%
+echo exit | sqlplus -s  %user_name%/%password%@%net_service_name% @ItemCountry.sql %schema_name_table% %schema_name_synonym% >> %result_file%
+echo exit | sqlplus -s  %user_name%/%password%@%net_service_name% @ItemPackagingMaterial.sql %schema_name_table% %schema_name_synonym% >> %result_file%
+echo exit | sqlplus -s  %user_name%/%password%@%net_service_name% @PartyItem.sql %schema_name_table% %schema_name_synonym% >> %result_file%
+
+echo exit | sqlplus -s  %user_name%/%password%@%net_service_name% @ItemDataSequences.sql %schema_name_table% %schema_name_synonym% >> %result_file%
+
+cd ../batch
+pause:

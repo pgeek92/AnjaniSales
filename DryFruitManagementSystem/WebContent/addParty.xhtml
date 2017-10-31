@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+
+	<meta charset="utf-8" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	<script src="js/history.js"></script>
+
+</h:head>
+
+
+<body>
+	<h:form>
+		<p:panel id="basic" header="Demo"
+			footer="Copyright Demo"
+			style="margin-bottom:20px">
+			<ui:include src="adminMenuBar.xhtml" />
+			<br></br>
+
+			<h:form id="addPartyForm">
+				<p:growl id="growl" showDetail="false" sticky="true" />
+				<p:panel id="basic1" header="Add Party" style="margin-bottom:20px">
+					<h:panelGrid columns="4" cellpadding="10" style="margin : 0 auto;">
+
+						<p:outputLabel for="partyName" value="Party Name"></p:outputLabel>
+						<p:inputText required="true" id="partyName"
+						    value="#{partyManagedBean.partyBean.partyName}"
+							placeholder="Enter Party Name"
+							requiredMessage="Party Name is mandatory"></p:inputText>
+
+						<p:outputLabel for="address" value="Address"></p:outputLabel>
+						<h:panelGroup>
+							<p:inputTextarea style="resize : none" rows="3" cols="22"
+								counter="addressDisplay" maxlength="100"
+								counterTemplate="{0} characters remaining." autoResize="false" required="true" value="#{partyManagedBean.partyBean.address}" placeholder="Enter Address Here" id="address"/>
+							<br></br>
+							<h:outputText id="addressDisplay" />
+						</h:panelGroup>
+
+						<p:outputLabel for="landmark" value="Landmark"></p:outputLabel>
+						<p:inputText id="landmark" value="#{partyManagedBean.partyBean.landmark}"></p:inputText>
+
+						<p:outputLabel for="city" value="City"></p:outputLabel>
+						<p:inputText id="city" value="#{partyManagedBean.partyBean.city}"></p:inputText>
+
+						<p:outputLabel for="prtyCatgry" value="Party Category" />
+						<p:selectOneRadio id="prtyCatgry" value="#{partyManagedBean.partyBean.category}">
+							<f:selectItem itemLabel="Local" itemValue="Local" />
+							<f:selectItem itemLabel="Outstation" itemValue="Outstation" />
+						</p:selectOneRadio>
+
+						<p:outputLabel for="remarks" value="Remarks"></p:outputLabel>
+						<h:panelGroup>
+							<p:inputTextarea style="resize : none" rows="3" cols="22"
+								counter="remarksDisplay" maxlength="100"
+								counterTemplate="{0} characters remaining." autoResize="false"  value="#{partyManagedBean.partyBean.remarks}" id="remarks"/>
+							<br></br>
+							<h:outputText id="remarksDisplay" />
+						</h:panelGroup>
+
+						<p:commandButton action="#{partyManagedBean.addPartyActionListener}"
+							id="submit" title="Add Party" update="growl"/>
+						<p:commandButton value="Reset" update="basic1" process="@this"
+							style="margin-right:20px;">
+							<p:resetInput target="basic1" />
+						</p:commandButton>
+
+					</h:panelGrid>
+				</p:panel>
+			</h:form>
+			<br> </br>
+			<br> </br>
+		</p:panel>
+	</h:form>
+</body>
+
+</html>

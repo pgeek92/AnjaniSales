@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<script src="js/history.js"></script>
+
+</h:head>
+
+<body>
+	<h:form>
+		<p:panel id="headPanel" header="Demo"
+			footer="Copyright Demo"
+			style="margin-bottom:20px">
+			<ui:include src="adminMenuBar.xhtml" />
+			<br></br>
+
+			<h:form id="updatePartyForm">
+				<p:growl id="growl" showDetail="false" sticky="true" />
+				<p:panel id="formPanel" header="Update Party"
+					style="margin-bottom:20px">
+					<h:panelGrid columns="4" cellpadding="10" style="margin : 0 auto;">
+						<p:outputLabel value="Party"></p:outputLabel>
+
+						<p:selectOneMenu value="#{partyUpdateManagedBean.selectedPartyName}"
+							id="party" required="true" requiredMessage="Please select Party"
+							valueChangeListener="#{partyUpdateManagedBean.valueChangeMethod}">
+
+							<f:selectItem partyLabel="Select a Party" partyValue=""
+								noSelectionOption="true" />
+							<f:selectItems value="#{partyUpdateManagedBean.partyList}"></f:selectItems>
+							<p:ajax update="partyName, address, landmark, city, prtyCatgry, ttlOutAmt, remarks, partyStatus"></p:ajax>
+						</p:selectOneMenu>
+
+						
+						<p:outputLabel for="partyName" value="Party Name"></p:outputLabel>
+						<p:inputText value="#{partyUpdateManagedBean.partyBean.partyName}"
+							id="partyName" placeholder="Enter Party Name"
+							requiredMessage="Party Name is mandatory"></p:inputText>
+						
+						<p:outputLabel for="address" value="Address"></p:outputLabel>
+						<h:panelGroup>
+							<p:inputTextarea style="resize : none" rows="3" cols="22"
+								counter="addressDisplay" maxlength="100"
+								counterTemplate="{0} characters remaining." autoResize="false" required="true" value="#{partyUpdateManagedBean.partyBean.address}" placeholder="Enter Address Here" id="address"/>
+							<br></br>
+							<h:outputText id="addressDisplay" />
+						</h:panelGroup>
+
+						<p:outputLabel for="landmark" value="Landmark"></p:outputLabel>
+						<p:inputText id="landmark" value="#{partyUpdateManagedBean.partyBean.landmark}"></p:inputText>
+
+						<p:outputLabel for="city" value="City"></p:outputLabel>
+						<p:inputText id="city" value="#{partyUpdateManagedBean.partyBean.city}"></p:inputText>
+
+						<p:outputLabel for="prtyCatgry" value="Party Category" />
+						<p:selectOneRadio id="prtyCatgry" value="#{partyUpdateManagedBean.partyBean.category}">
+							<f:selectItem itemLabel="Local" itemValue="Local" />
+							<f:selectItem itemLabel="Outstation" itemValue="Outstation" />
+						</p:selectOneRadio>
+
+						<p:outputLabel value="Total Outstanding Amount"></p:outputLabel>
+						<p:inputText id="ttlOutAmt" required="true" value="#{partyUpdateManagedBean.partyBean.totalOutstandingAmount}"></p:inputText>
+						
+							
+						<h:outputText for="remarks" value="Remarks"></h:outputText>
+						<h:panelGroup>
+							<p:inputTextarea value="#{partyUpdateManagedBean.partyBean.remarks}"
+								style="resize : none" rows="3" cols="22"
+								counter="remarksDisplay" maxlength="100"
+								counterTemplate="{0} characters remaining." autoResize="false"
+								placeholder="Enter remarks here" id="remarks" />
+							<br></br>
+							<h:outputText id="remarksDisplay" />
+							
+						</h:panelGroup>
+						
+						<p:outputLabel for="partyStatus" value="Status"></p:outputLabel>
+						<p:selectOneMenu value="#{partyUpdateManagedBean.partyBean.partyStatus}"
+							required="true" requiredMessage="Please select Party" id="partyStatus">
+							<f:selectItem itemLabel="ACTIVE" itemValue="ACTIVE" />
+							<f:selectItem itemLabel="INACTIVE" itemValue="INACTIVE" />
+						</p:selectOneMenu>
+						
+					</h:panelGrid>
+					<h:panelGrid columns="2" cellpadding="10" style="margin : 0 auto;">
+
+						<p:commandButton
+							action="#{partyUpdateManagedBean.updatePartyActionListener}"
+							id="submit" title="Update Party" update="growl">
+						</p:commandButton>
+						
+						<p:commandButton title="Reset" update="formPanel" process="@this"
+							style="margin-right:20px;">
+							<p:resetInput target="formPanel" />
+						</p:commandButton>
+
+					</h:panelGrid>
+				</p:panel>
+			</h:form>
+			<br> </br>
+			<br> </br>
+		</p:panel>
+	</h:form>
+</body>
+
+</html>

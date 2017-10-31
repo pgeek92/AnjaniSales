@@ -1,0 +1,81 @@
+Amount calculation business logic
+---------------------------------
+BASIC_AMOUNT = RATE*QUANTITY;
+BROKERAGE_AMOUNT = BASIC_AMOUNT*BROKERAGE_PERCENTAGE
+TOTAL_AMOUNT = BASIC_AMOUNT + MAZDOORI + BARDAANA + COMMISION
+
+
+ADMIN can do following tasks
+----------------------------
+1. can add new ITEM with ITEM_NAME entry only if this ITEM_NAME doesn't exist in Database
+   (if ITEM_NAME to be added in Database is already present in Database then a dialog box 
+   should appear with following message = "This ITEM_NAME already exist, please use another ITEM_NAME")
+   
+   can update ITEM_NAME, if that ITEM_NAME already exist in Database.
+   
+2. can add new BROKER with BROKER_NAME entry only if this BROKER_NAME doesn't exist in Database
+   (if BROKER_NAME to be added in Database is already present in Database then a dialog box
+   should appear with following message = "This BROKER_NAME already exist, please use another BROKER_NAME")
+   
+   can update BROKER_NAME, if that BROKER_NAME already exist in Database.
+   
+3. can add new PARTY with PARTY_NAME, PARTY_LANDMARK, PARTY_CITY & PARTY_CATEGORY entry only if these details 
+   (PARTY_NAME, PARTY_LANDMARK, PARTY_CITY) don't exist in Database
+   (if PARTY to be added in Database is already present in Database then a dialog box should
+   appear with following message = "This PARTY with PARTY_NAME, PARTY_CITY, PARTY_LANDMARK, please either change PARTY_NAME or PARTY_CITY or PARTY_LANDMARK")
+   
+   can update PARTY_NAME, PARTY_CATEGORY, PARTY_CITY, PARTY_LANDMARK if that PARTY already exist in Database.
+   
+4. can APPROVE or REJECT new User registration request.(mention comment for rejecting)
+
+
+USER can do following tasks
+---------------------------
+1. can add SALES DETAIL with following entries (Handeld as SALESBOOK)
+   a) will select PARTY_NAME
+   b) will select BROKER_NAME(if YES)
+	  b-1) will enter BROKERAGE_PERCENTAGE
+   c) will enter RATE
+   d) will enter QUANTITY
+   e) System will automatically calculate BASIC_AMOUNT
+   f) b-2) System will automatically calculate BROKERAGE_AMOUNT
+   g) will enter COMMISION(optional)
+   h) will enter MAZDOORI(optional)
+   i) will enter BARDAANA(optional)
+   j) System will automatically calculate TOTAL_AMOUNT
+   k) SALES_DATE will be selected as a date on which this transaction is performed (what if the entry is made after the transaction ? 
+      Date should be taken while updating, if no input is provided than it should display an Information message should be displayed 
+	  to the user- “Sales_date is not provided, do you want present date to be set as sales_date ?” If the user clicks on yes only then 
+	  it should take sales_date as present date else it should ask the user to enter a date.)
+   
+2. Based on POINT (1) (will be DONE internally not on screen) (Handeld as SALESBOOK)
+   a) A particular PARTY will have OUTSTANDING_AMOUNT with OUTSTANDING_DATE(reference SALES_DATE)
+   b) A particular BROKER will have BROKERAGE_AMOUNT with DATE(reference SALES_DATE) on which this BROKERAGE_AMOUNT is calculated
+   c) if suppose for a particular PARTY OUTSTANDING_AMOUNT is 10000 Rupees on September 10, 2016 and PARTY has given us 8000 Rupees on September 18, 2016
+      then in that case one entry will be there in which PAYMENT_RECEIVED amount will be 8000 and PAYMENT_RECEIVED_DATE will be September 18, 2016
+   d) if suppose for a particular PARTY OUTSTANDING_AMOUNT is 10000 Rupees on September 10, 2016 and PARTY has given us 10200 Rupees on October 18, 2016
+      then in that case one entry will be there in which PAYMENT_RECEIVED amount will be 10000, INTEREST_AMOUNT_RECEIVED on OUTSTANDING_AMOUNT will be 200 Rupees
+	  and PAYMENT_RECEIVED_DATE will be October 18, 2016
+   e) if suppose for a particular PARTY OUTSTANDING_AMOUNT is 10000 Rupees on September 10, 2016 and PARTY has given us 14000 Rupees on September 18, 2016
+      then in that case one entry will be there in which PAYMENT_RECEIVED amount will be 14000 and PAYMENT_RECEIVED_DATE will be September 18, 2016
+   f) if suppose for a particular PARTY OUTSTANDING_AMOUNT is 10000 Rupees on September 10, 2016 and PARTY has given us 14600 Rupees on October 18, 2016
+      then in that case one entry will be there in which PAYMENT_RECEIVED amount will be 14000, INTEREST_AMOUNT_RECEIVED on OUTSTANDING_AMOUNT will be 600 Rupees 
+	  and PAYMENT_RECEIVED_DATE will be October 18, 2016
+   g) Every time any payment comes then this record will be inserted into Database, I mean we will not update OUTSTANDING_AMOUNT.
+   h) We will give BROKERAGE_AMOUNT to BROKER in following case
+      h-1) if BROKERAGE_AMOUNT = 15000 then we can give him 13600, 15000 or 16000 so that need to be tracked
+	  
+3. can add DEBIT and CREDIT side in CASH DETAIL with following entries (Handled as CASHBOOK)
+   a) will enter DEBIT Description as either BROKERAGE_AMOUNT given, other PAYMENT made like(Electricity bill, Telephone bill, Cold Storage Transport and rent charges,
+	  extra expenses, LOAN_AMOUNT given back from which we have taken LOAN)
+   b) will enter CREDIT Description as either LOAN_AMOUNT taken from someone (LOAN_AMOUNT type can be SECURED(BANK) or UNSECURED(from someone)), Payment received from PARTY
+      with which mode(CASH, CHEQUE, NEFT/RTGS), if PAYMENT received from CHEQUE then CHEQUE details will be saved into Database like (CHEQUE_NUMBER, BANK_NAME)
+   c) CASH_IN_HAND will be calculated automatically by System
+   
+4. can generate report either in PDF or EXCEL FORMAT
+   a) can generate CASHBOOK on DAILY, WEEKLY, NO_OF_DAYS, YEARLY
+   b) can generate BROKER_DETAILS LIKE(BROKER_NAME, TOTAL_BROKERAGE_AMOUNT)
+   c) can generate PARTY OUTSTANDING_AMOUNT either WEEKLY, YEARLY, MONTHLY
+   
+   
+   

@@ -1,0 +1,41 @@
+Requirement Details : 
+
+2 things will be made (1. SALESBOOK
+					   2. CASHBOOK)
+					   
+1. SALESBOOK Requirement
+   a) There are multiple users in which one user is ADMIN
+		
+	  a-1) ADMIN can generate Weekly, Monthly or Yearly depends on input on screen between dates Outstanding Amount of Particular Party whether it is with BROKER or without BROKER
+	  a-2) ADMIN can generate Weekly, Monthly or Yearly depends on input on screen between dates total Brokerage Amount of particular Broker in PDF or EXCEL FORMAT
+   b) User except admin can make entries in SALESBOOK in the following way
+	  
+	  ** This is for ITEM **
+	  b-1) User can select ITEM from DROP-DOWN Menu on screen
+	  b-2) User can enter Quantity only in KGs on screen
+	  b-3) User can enter Rate of the Item on screen
+	  
+	  ** This is for PARTY **
+	  b-4) User can select PARTY NAME from DROP-DOWN if the ITEM sold to the previously added PARTY, otherwise User can create new PARTY and make entry
+	  b-5) User have to select CATEGORY of PARTY whether it is LOCAL or OUTSTATION
+	  
+	  ** This if for BROKER **
+	  b-6) Is an item is sell through BROKER then he has to select checkbox that BROKER is TRUE and after that he has to select from DROP-DOWN which BROKER is and 
+	       if BROKER is not present in DROP-DOWN then User can create BROKER and add it to the database
+	  b-7) BROKERAGE % will be added by user on screen depends on BROKER
+	  b-8) If BROKER is present for any item which is sell to the particular PARTY then BROKERAGE AMOUNT will be calculated on the basis of BASIC_AMOUNT's Particular BROKER's BROKERAGE %, 
+	       Where BASIC_AMOUNT includes (RATE*QUANTITY) and TOTAL_AMOUNT includes (BASIC_AMOUNT + COMMISSION + BARDANA + MAZDOORI)
+		   
+	  ** This is for SALES **
+	  b-9) This is the reference table which is created in DATABASE based on above inputs
+	  b-10) ITEM_ID, PARTY_ID, BROKER_ID, TOTAL_AMOUNT, INVOICE_DATE, INVOICE_NUMBER is calculated and will persist into DATABASE
+	  
+2. CASHBOOK Requirement
+	a) User other than admin can enter daily data which is credited and debited so that he can match his BALANCE on daily basis
+    b) In Credit Party can make a payment which he has purchased from us so this entry has to be created so that we can maintain his total outstanding
+	c) In Credit side Seller can take loan amount or any other amount that has to be maintained.
+	d) In debit side what expenses has to occur has to be entered
+	e) and Total Balancesheet has to be created based on above inputs
+	f) ADMIN can see the PDF or EXCEL FORMAT of Daily BALANCESHEET
+	g) If we take Loan from someone than this entry should be present in seperate table so that we can track how much amount we have to give back and this entry should
+	   be present in CASHBOOK also
