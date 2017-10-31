@@ -1,0 +1,119 @@
+<!DOCTYPE html [
+    <!ENTITY copy "&#169;"> 
+]>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<script src="js/history.js"></script>
+	<link href="css/dryFruit.css" rel="stylesheet" />
+
+</h:head>
+
+<body>
+	<h:form>
+		<p:panel id="headPanel" header="Demo">
+			<ui:include src="adminMenuBar.xhtml" />
+			<br></br>
+
+			<h:form id="viewBrokersForm">
+				<p:growl id="growl" showDetail="false" sticky="true" life="5000" />
+				<p:panel id="formPanel" header="View Broker Details"
+					style="margin-bottom:20px">
+					<p:dataTable id="brokerDetailsDatatable" var="brokerDetail"
+						value="#{viewBrokersManagedBean.brokerDetailsList}" rows="10"
+						paginator="true"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Exporters}"
+						rowsPerPageTemplate="5,10,15" resizableColumns="true"
+						rowStyleClass="#{brokerDetail.brokerStatus == 'ACTIVE' ? styleRowInactive : null}"
+						scrollable="true" widgetVar="brokerTable"
+						>
+
+						<f:facet name="{Exporters}">
+							<p:commandButton value="Export Excel" ajax="false"
+								style="margin-left:60px" id="exportExcel">
+								<p:dataExporter type="xls" target="brokerDetailsDatatable"
+									fileName="brokerDetails"
+									postProcessor="#{viewBrokersManagedBean.postProcessXLS}" />
+							</p:commandButton>
+
+							<p:commandButton value="Export PDF" ajax="false" id="exportPDF">
+								<p:dataExporter type="pdf" target="brokerDetailsDatatable"
+									fileName="brokerDetails" />
+							</p:commandButton>
+						</f:facet>
+
+						<p:column headerText="Broker Name"
+							sortBy="#{brokerDetail.brokerName}" style="width:200px" filterBy="#{brokerDetail.brokerName}">
+							<h:outputText value="#{brokerDetail.brokerName}" style="font-size:16px"/>
+						</p:column>
+						<p:column headerText="Remarks" rendered="false" style="width:50px">
+							<h:outputText value="#{brokerDetail.remarks}" />
+						</p:column>
+						<p:column headerText="Status"
+							sortBy="#{brokerDetail.brokerStatus}" style="width:190px" filterMatchMode="exact"
+							filterBy="#{brokerDetail.brokerStatus}">
+							<f:facet name="filter">
+								<p:selectOneButton onchange="PF('brokerTable').filter()"
+									style="font-size:12px">
+									<f:selectItem itemLabel="All" itemValue="" />
+									<f:selectItem itemLabel="ACTIVE" itemValue="ACTIVE" />
+									<f:selectItem itemLabel="INACTIVE" itemValue="INACTIVE" />
+								</p:selectOneButton>
+
+							</f:facet>
+							<h:outputText value="#{brokerDetail.brokerStatus}" style="font-size:16px"/>
+						</p:column>
+						<p:column headerText="Outstanding Amount" style="width:190px" 
+							sortBy="#{brokerDetail.totalAmountRemaining}" filterBy="#{brokerDetail.totalAmountRemaining}">
+							<h:outputText value="#{brokerDetail.totalAmountRemaining}" style="font-size:16px"/>
+						</p:column>
+						<p:column headerText="Created Date"
+							sortBy="#{brokerDetail.createdDate}" exportable="false" style="width:170px"  filterBy="#{brokerDetail.createdDate}">
+							<h:outputText value="#{brokerDetail.createdDate}" style="font-size:16px"/>
+						</p:column>
+						<p:column headerText="Created By"
+							sortBy="#{brokerDetail.brokerCreatedBy.userId}"
+							exportable="false" style="width:120px" filterBy="#{brokerDetail.brokerCreatedBy.userId}" >
+							<h:outputText value="#{brokerDetail.brokerCreatedBy.userId}" style="font-size:16px"/>
+						</p:column>
+						<p:column headerText="Updated Date"
+							sortBy="#{brokerDetail.updatedDate}" exportable="false" style="width:170px" filterBy="#{brokerDetail.updatedDate}">
+							<h:outputText value="#{brokerDetail.updatedDate}" style="font-size:16px"/>
+						</p:column>
+						<p:column headerText="Updated By"
+							sortBy="#{brokerDetail.brokerUpdatedBy.userId}"
+							exportable="false" style="width:120px" filterBy="#{brokerDetail.brokerUpdatedBy.userId}">
+							<h:outputText value="#{brokerDetail.brokerUpdatedBy.userId}" style="font-size:16px"/>
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			</h:form>
+			
+		</p:panel>
+		<p:blockUI block="headPanel"
+			trigger="viewBrokersForm:brokerDetailsDatatable:exportExcel">
+			<p:outputLabel value="LOADING"></p:outputLabel>
+			<br></br>
+			<img src="images/ajaxloadingbar.gif" />
+		</p:blockUI>
+		<p:blockUI block="headPanel"
+			trigger="viewBrokersForm:brokerDetailsDatatable:exportPDF">
+			<p:outputLabel value="LOADING"></p:outputLabel>
+			<br></br>
+			<img src="images/ajaxloadingbar.gif" />
+		</p:blockUI>
+
+		<center>
+			<h:outputLabel value="&copy; Copyright"
+				style="position: relative; left: 0; bottom: 0; right: 0;"></h:outputLabel>
+		</center>
+	</h:form>
+</body>
+
+</html>

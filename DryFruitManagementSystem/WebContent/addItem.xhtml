@@ -1,0 +1,99 @@
+<!DOCTYPE html [
+    <!ENTITY copy "&#169;"> 
+]>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<script src="js/history.js"></script>
+
+</h:head>
+
+<body>
+	<h:form>
+		<p:panel id="headPanel" header="Demo" style=" height:600px">
+			<ui:include src="adminMenuBar.xhtml" />
+			<br></br>
+
+			<h:form id="addItemForm">
+				<p:growl id="growl" showDetail="false" life="5000" autoUpdate="true" />
+				<p:panel id="formPanel" header="Add Item" style="margin-bottom:20px"> 
+					<h:panelGrid columns="2" cellpadding="15" style="margin : 0 auto;">
+
+						<p:outputLabel for="itemName" value="Item Name"></p:outputLabel>
+						<p:inputText required="true"
+							value="#{itemManagedBean.itemBean.itemName}" id="itemName"
+							placeholder="Enter Item Name"
+							requiredMessage="Item Name is mandatory" maxlength="50"></p:inputText>
+							
+						<!-- <p:messages autoUpdate="true" showDetail="true" id="messages"></p:messages> -->
+						<p:dataTable id="tbl" value="#{itemManagedBean.dummyNames}" var="val">
+                			<!-- <p:column>#{val}</p:column> -->
+                			<p:column colspan="4">
+                    		<p:column styleClass="columnA" style="vertical-align:top;">Item Category</p:column>
+
+                    		<p:column styleClass="columnB" style="width:10%">
+	                        	<ui:repeat var="input" value="#{itemManagedBean.inputTexts}">
+    	                        	<p:inputText size="15" value="#{input}" />
+        	                	</ui:repeat>
+	
+    	                    	<b style="padding: 0px 0px 0px 18px"> <p:commandButton
+        	                        value="Add Category" actionListener="#{itemManagedBean.addInput}"
+            	                    update="tbl"
+                	                style=" margin-bottom:10px;width:auto;height:28px;font-style: normal; font-family:Arial;font-size: 13px; color: #000000;
+                    	                      text-align:center;font-weight: normal;text-decoration:none;cursor: pointer ">
+	
+    	                        	</p:commandButton>
+        	                	</b>
+	
+    	                	</p:column>
+        	    	    	</p:column>
+            			</p:dataTable>
+						<h:outputText value="Remarks"></h:outputText>
+						<h:panelGroup>
+							<p:inputTextarea value="#{itemManagedBean.itemBean.remarks}"
+								style="resize : none" rows="3" cols="22"
+								counter="remarksDisplay" maxlength="100"
+								counterTemplate="{0} characters remaining." autoResize="false"
+								placeholder="Enter remarks here" />
+							<br></br>
+							<h:outputText id="remarksDisplay" style="font-size:12px" />
+						</h:panelGroup>
+
+
+
+					</h:panelGrid>
+
+					<h:panelGrid columns="2" cellpadding="15" style="margin : 0 auto;">
+						<p:commandButton action="#{itemManagedBean.addItemActionListener}"
+							id="submit" title="Add Item" update="growl" />
+
+						<p:commandButton title="Reset" update="formPanel" process="@this"
+							style="margin-right:20px;">
+							<p:resetInput target="formPanel" />
+						</p:commandButton>
+					</h:panelGrid>
+
+				</p:panel>
+			</h:form>
+
+		</p:panel>
+		<p:blockUI block="headPanel" trigger="addItemForm:submit">
+        	<p:outputLabel value="LOADING"></p:outputLabel>
+        	<br></br>
+			<img src="images/ajaxloadingbar.gif" />
+		</p:blockUI>
+
+		<center>
+			<h:outputLabel value="&copy; Copyright"
+				style="position: relative; left: 0; bottom: 0; right: 0;"></h:outputLabel>
+		</center>
+	</h:form>
+</body>
+
+</html>

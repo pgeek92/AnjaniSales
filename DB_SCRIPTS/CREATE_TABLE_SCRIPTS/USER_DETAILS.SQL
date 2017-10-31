@@ -1,0 +1,12 @@
+CREATE TABLE BPHBUS.USER_DETAILS (USER_ID VARCHAR2(15),
+                                  PASSWORD VARCHAR2(15) NOT NULL,
+                                  USER_NAME VARCHAR2(100) NOT NULL,
+                                  STATUS VARCHAR2(2) NOT NULL,
+                                  USER_ROLE VARCHAR2(15) NOT NULL,
+                                  SECURITY_QUESTION_ID NUMBER NOT NULL,
+                                  SECURITY_ANSWER VARCHAR2(100) NOT NULL,
+                                  REMARKS VARCHAR2(200),
+                                  CONSTRAINT CHK_STATUS CHECK (STATUS IN ('IP', 'RJ', 'AP', 'AC', 'IN')),
+                                  CONSTRAINT CHK_ROLE CHECK (USER_ROLE IN ('ADMIN', 'REGULAR_USER')),
+                                  CONSTRAINT FK_SQ_ID FOREIGN KEY (SECURITY_QUESTION_ID) REFERENCES SECURE_QUEST(SECURITY_QUESTION_ID),
+                                  CONSTRAINT UID_PK PRIMARY KEY(USER_ID));
